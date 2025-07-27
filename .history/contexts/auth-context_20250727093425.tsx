@@ -49,7 +49,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (phoneNumber: string, password: string) => {
     try {
-      const data = await apiClient.login(phoneNumber, password)
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber, password }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || "Login failed")
+      }
+
+      const data = await response.json()
 
       if (data.role !== "ADMIN") {
         throw new Error("Access denied. Admin privileges required.")

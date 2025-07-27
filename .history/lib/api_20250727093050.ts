@@ -3,9 +3,20 @@ class ApiClient {
 
   private getAuthHeaders() {
     const token = localStorage.getItem("admin_token")
+    
+    // Handle JWT token base64url to base64 conversion if needed
+    let processedToken = token
+    if (token) {
+      // JWT tokens use base64url encoding, but some APIs expect standard base64
+      // Convert base64url to base64 if the token contains underscores or hyphens
+      if (token.includes('_') || token.includes('-')) {
+        processedToken = token.replace(/-/g, '+').replace(/_/g, '/')
+      }
+    }
+    
     return {
       "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(processedToken && { Authorization: `Bearer ${processedToken}` }),
     }
   }
 

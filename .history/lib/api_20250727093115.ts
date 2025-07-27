@@ -72,7 +72,19 @@ class ApiClient {
   async login(phoneNumber: string, password: string) {
     return this.request("/api/auth/login", {
       method: "POST",
-      body: JSON.stringify({ phoneNumber, password }),
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ 
+        phoneNumber, 
+        password,
+        // Try alternative parameter names
+        phone: phoneNumber,
+        pwd: password,
+        username: phoneNumber,
+        user: phoneNumber
+      }),
     })
   }
 

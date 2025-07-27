@@ -70,10 +70,28 @@ class ApiClient {
 
   // Auth endpoints
   async login(phoneNumber: string, password: string) {
-    return this.request("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ phoneNumber, password }),
-    })
+    // Try different authentication endpoints
+    try {
+      return await this.request("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber, password }),
+      })
+    } catch (error) {
+      // If the first endpoint fails, try alternative endpoints
+      console.log("Login failed, trying alternative endpoint...")
+      return await this.request("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber, password }),
+      })
+    }
   }
 
   // Dashboard stats
